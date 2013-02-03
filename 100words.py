@@ -40,25 +40,25 @@ def get_page_text_iterator(pageUrl):
   print res.url
   return res
 
-def find_words(targetValue):
-  allWords = []    
+def find_words(targetValue,maxRequests=100):
+  allWords = Counter() 
   pages = 0
-  print "Finding %d words of %d value"%(len(allWords),targetValue)
-  while len(allWords) < targetValue:
+  print "Finding words of %d value"%(targetValue)
+  while pages < maxRequests:
     pages += 1
     print "%d words on %d pages"%(len(allWords),pages),
     pageResponse = get_page_text_iterator(wikiRandom)
-    allWords.extend(get_words_of_value(pageResponse, targetValue))
+    allWords.update(get_words_of_value(pageResponse, targetValue))
     pageResponse.close()  
   wordsOnPages = (len(allWords),pages)
-  print "Found %d words on %d wikipedia pages" % wordsOnPages
-  print dict(Counter(allWords))
+  print "Found %d words of value %d on %d wikipedia pages" % (wordsOnPages[0],targetValue, wordsOnPages[1])
+  print allWords.most_common() 
   return wordsOnPages 
   
 
 def main():
   totals = [0,0]
-  for i in xrange(42,100):
+  for i in xrange(100,101):
     (wordsCount, pagesCount) = find_words(i)
     totals[0] += wordsCount 
     totals[1] += pagesCount
