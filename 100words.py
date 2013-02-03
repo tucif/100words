@@ -2,6 +2,7 @@ from urllib2 import Request
 from urllib2 import urlopen
 from collections import Counter
 import logging
+import argparse
 
 #List of tuples of the kind: (a,1),(b,2),...(z,26) saved into a dict
 values  = dict((chr(x+96),x) for x in xrange(1,27))
@@ -11,12 +12,12 @@ wikiRandom = 'http://en.wikipedia.org/wiki/Special:Random'
 
 def get_word_value(word, targetValue):
   value = 0
-  for letter in word:
+  for character in word:
     #Little optimization to avoid parsing words that won't make it
     if(value > targetValue):
       return value
     try:
-      value += values[letter]
+      value += values[character]
     except KeyError:
       #Invalid character, invalid word
       return -1 
@@ -40,9 +41,10 @@ def get_page_text_iterator(pageUrl):
   req = Request(wikiRandom,headers=defaultHeaders)
   res = urlopen(req)
   logging.info(res.url)
+  print '.'
   return res
 
-def find_words(targetValue,maxRequests=100):
+def find_words(targetValue=100,maxRequests=100):
   allWords = Counter() 
   pages = 0
   logging.info("Finding words of %d value"%(targetValue))
@@ -53,22 +55,22 @@ def find_words(targetValue,maxRequests=100):
     allWords.update(get_words_of_value(pageResponse, targetValue))
     pageResponse.close()  
   wordsOnPages = (len(allWords),pages)
-  print "Found %d words of value %d on %d wikipedia pages" % (wordsOnPages[0],targetValue, wordsOnPages[1])
+  print "\nFound %d words of value %d on %d wikipedia pages" % (wordsOnPages[0],targetValue, wordsOnPages[1])
   print allWords.most_common() 
   return wordsOnPages 
   
 
 def main():
-  totals = [0,0]
-  for i in xrange(100,101):
-    (wordsCount, pagesCount) = find_words(i)
-    totals[0] += wordsCount 
-    totals[1] += pagesCount
-  logging.info("Made %d requests and retrieved %d valid words")
+  parser = argparse.ArgumentParser()
+  parser.add_argument("-v","--value", help="Target value that the word's characters will add to", type=int, default=100)
+  parser.add_argument("-r","--requests", help="Number of requests performed to retrieve data", type=int, default=100)
+  args = parser.parse_args()
+  results = find_words(args.value,args.requests)
+  logging.info("Retrieved %d valid words from %d wikipedia pages"%results)
   
 def todo():
   pass
 
 if __name__ == "__main__":
-  logging.basicConfig(level=logging.INFO)
+  #logging.basicConfig(level=logging.INFO)
   main()

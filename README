@@ -1,0 +1,56 @@
+100Words
+========
+
+This morning I saw on a friend's facebook wall a motivational image stating:
+"
+ Coincidence or Not?
+ If
+   A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+ Equals
+   1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 (...)
+ Then
+    K + N + O + W + L + E + D + G + E
+   11 + 14+ 15+ 23+ 12+ 5 + 4 + 7 + 5 = 96%
+
+   H+A+R+D+W+O+R+K
+   8+1+18+4+23+15+18+11 = 98%
+   
+   Both are important, but the total fails just short of 100%
+However,
+   A+T+T+I+T+U+D+E
+   1+20+20+9+20+21+4+5 = 100%
+"
+
+Then, I said, BITCHPLEASE (which adds 100), and made this little python script that crawls random pages from wikipedia and finds as many words as it can whose characters add up to 100 as well. Coincidence? Of course!!
+
+I know this might be USELESS(adds 100 too), but it was quite fun and I learned many things.
+
+Requirements
+--------------
+Python 2.7.x
+
+Running the script
+------------------ 
+By default, it looks for words adding up 100 and requests 100 wikipedia random pages.
+The output is all the found words, ordered by most popular.
+
+$>python 100words.py
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Found 56 words of value 100 on 100 wikipedia pages
+[('sources', 49), ('services', 15), ('primary', 8), ('culture', 7), ('writing', 7), ('towards', 7), ('appointed', 6), ('performed', 5), ('status', 4), ('acquitted', 4), ('squares', 3), ('problems', 3), ('practicing', 3), ('anterior', 2), ('prevent', 2), ('negotiated', 2), ('variety', 2), ('therefore', 2), ('styles', 2), ('striker', 2), ('quarter', 2), ('outset', 1), ('candidature', 1), ('playoffs', 1), ('discernible', 1), ('attitude', 1), ('reputable', 1), ('diagonally', 1), ('elsewhere', 1), ('pouring', 1), ('dominates', 1), ('referring', 1), ('cousins', 1), ('hospital', 1), ('discredited', 1), ('towers', 1), ('boundary', 1), ('molecular', 1), ('posting', 1), ('sherrini', 1), ('maintains', 1), ('threatened', 1), ('delivery', 1), ('inflation', 1), ('excellent', 1), ('stress', 1), ('adulthood', 1), ('whenever', 1), ('analysis', 1), ('standards', 1), ('spirited', 1), ('courses', 1), ('rituals', 1), ('resolved', 1), ('catechisms', 1), ('skrevet', 1)]
+
+You can also specify a target value different from 100 and modify the number of requests made:
+$> python 100words.py -h
+usage: 100words.py [-h] [-v VALUE] [-r REQUESTS]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v VALUE, --value VALUE
+                        Target value that the word's characters will add to
+  -r REQUESTS, --requests REQUESTS
+                        Number of requests performed to retrieve data
+
+
+Example
+------
+$>python 100words.py -v 42 -r 10000
