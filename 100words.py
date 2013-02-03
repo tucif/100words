@@ -28,7 +28,7 @@ def get_words_of_value(lineIterator,targetValue):
   try:  
     while True:
       line = lineIterator.next()
-      for word in line.split():
+      for word in line.lower().split():
         wordValue = get_word_value(word, targetValue)      
         if wordValue == targetValue:
           words.append(word)
