@@ -1,5 +1,7 @@
-import urllib2
+from urllib2 import Request
+from urllib2 import urlopen
 from collections import Counter
+import logging
 
 #List of tuples of the kind: (a,1),(b,2),...(z,26) saved into a dict
 values  = dict((chr(x+96),x) for x in xrange(1,27))
@@ -29,24 +31,24 @@ def get_words_of_value(lineIterator,targetValue):
         wordValue = get_word_value(word, targetValue)      
         if wordValue == targetValue:
           words.append(word)
-  except:
+  except StopIteration:
     pass 
 
   return words
 
 def get_page_text_iterator(pageUrl):
-  req = urllib2.Request(wikiRandom,headers=defaultHeaders)
-  res = urllib2.urlopen(req)
-  print res.url
+  req = Request(wikiRandom,headers=defaultHeaders)
+  res = urlopen(req)
+  logging.info(res.url)
   return res
 
 def find_words(targetValue,maxRequests=100):
   allWords = Counter() 
   pages = 0
-  print "Finding words of %d value"%(targetValue)
+  logging.info("Finding words of %d value"%(targetValue))
   while pages < maxRequests:
     pages += 1
-    print "%d words on %d pages"%(len(allWords),pages),
+    logging.info("%d words on %d pages"%(len(allWords),pages))
     pageResponse = get_page_text_iterator(wikiRandom)
     allWords.update(get_words_of_value(pageResponse, targetValue))
     pageResponse.close()  
@@ -62,10 +64,11 @@ def main():
     (wordsCount, pagesCount) = find_words(i)
     totals[0] += wordsCount 
     totals[1] += pagesCount
-  print "Made %d requests and retrieved %d valid words"
+  logging.info("Made %d requests and retrieved %d valid words")
   
 def todo():
   pass
 
 if __name__ == "__main__":
+  logging.basicConfig(level=logging.INFO)
   main()
