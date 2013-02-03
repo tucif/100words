@@ -1,4 +1,5 @@
 import urllib2
+from collections import Counter
 
 #List of tuples of the kind: (a,1),(b,2),...(z,26) saved into a dict
 values  = dict((chr(x+96),x) for x in xrange(1,27))
@@ -15,7 +16,8 @@ def get_word_value(word, targetValue):
     try:
       value += values[letter]
     except KeyError:
-      return value 
+      #Invalid character, invalid word
+      return -1 
   return value
 
 def get_words_of_value(lineIterator,targetValue):
@@ -23,14 +25,14 @@ def get_words_of_value(lineIterator,targetValue):
   try:  
     while True:
       line = lineIterator.next()
-      for word in line.split(" "):
+      for word in line.split():
         wordValue = get_word_value(word, targetValue)      
         if wordValue == targetValue:
-          words.append((word,None))
+          words.append(word)
   except:
     pass 
 
-  return words100
+  return words
 
 def get_page_text_iterator(pageUrl):
   req = urllib2.Request(wikiRandom,headers=defaultHeaders)
@@ -39,26 +41,28 @@ def get_page_text_iterator(pageUrl):
   return res
 
 def find_words(targetValue):
-  allWords = {}    
+  allWords = []    
   pages = 0
   print "Finding %d words of %d value"%(len(allWords),targetValue)
   while len(allWords) < targetValue:
     pages += 1
     print "%d words on %d pages"%(len(allWords),pages),
     pageResponse = get_page_text_iterator(wikiRandom)
-    allWords.update(get_words_of_value(pageResponse, targetValue))
+    allWords.extend(get_words_of_value(pageResponse, targetValue))
     pageResponse.close()  
   wordsOnPages = (len(allWords),pages)
   print "Found %d words on %d wikipedia pages" % wordsOnPages
-  print allWords.keys()
+  print dict(Counter(allWords))
   return wordsOnPages 
   
 
 def main():
-  totals = (0,0)
-  for i in xrange(2,100):
+  totals = [0,0]
+  for i in xrange(42,100):
     (wordsCount, pagesCount) = find_words(i)
-  
+    totals[0] += wordsCount 
+    totals[1] += pagesCount
+  print "Made %d requests and retrieved %d valid words"
   
 def todo():
   pass
