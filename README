@@ -54,3 +54,6 @@ optional arguments:
 Example
 ------
 $>python 100words.py -v 42 -r 10000
+
+
+- "One script is worth a 100 words"
